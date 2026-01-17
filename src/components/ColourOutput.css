@@ -1,0 +1,46 @@
+.colour-output {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.colour-output-label {
+  font-weight: 600;
+  min-width: 60px;
+  color: #666;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.colour-output-value {
+  flex: 1;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: 14px;
+  color: #333;
+  word-break: break-all;
+}
+
+.colour-output-copy {
+  padding: 6px 12px;
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  min-width: 70px;
+}
+
+.colour-output-copy:hover {
+  background: #4f46e5;
+}
+
+.colour-output-copy:active {
+  background: #4338ca;
+}
