@@ -11,6 +11,7 @@ export function ColourList({ colours, onDelete }: ColourListProps) {
   if (colours.length === 0) {
     return (
       <div className="colour-list-empty">
+        <div className="colour-list-empty-icon">🎨</div>
         <p>No colours saved yet. Add some colours above!</p>
       </div>
     )
@@ -18,7 +19,12 @@ export function ColourList({ colours, onDelete }: ColourListProps) {
 
   return (
     <div className="colour-list">
-      <h2 className="colour-list-title">Saved Colours ({colours.length})</h2>
+      <div className="colour-list-header">
+        <h2 className="colour-list-title">
+          Saved Colours
+          <span className="colour-list-count">{colours.length}</span>
+        </h2>
+      </div>
       <div className="colour-list-grid">
         {colours.map(colour => (
           <ColourCard

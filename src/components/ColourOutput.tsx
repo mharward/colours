@@ -21,7 +21,7 @@ export function ColourOutput({ label, value }: ColourOutputProps) {
       <span className="colour-output-label">{label}</span>
       <code className="colour-output-value">{value}</code>
       <button
-        className="colour-output-copy"
+        className={`colour-output-copy ${copied ? 'copied' : ''}`}
         onClick={handleCopy}
         title={`Copy ${label}`}
       >

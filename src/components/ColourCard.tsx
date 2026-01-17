@@ -11,8 +11,14 @@ interface ColourCardProps {
 export function ColourCard({ colour, onDelete }: ColourCardProps) {
   const [expanded, setExpanded] = useState(false)
 
+  // Create a glow colour with transparency for the swatch
+  const glowColour = colour.formats.rgba.replace(/[\d.]+\)$/, '0.4)')
+
   return (
-    <div className={`colour-card ${expanded ? 'expanded' : ''}`}>
+    <div
+      className={`colour-card ${expanded ? 'expanded' : ''}`}
+      style={{ '--swatch-glow': glowColour, '--card-glow': glowColour } as React.CSSProperties}
+    >
       <div
         className="colour-card-header"
         onClick={() => setExpanded(!expanded)}
@@ -35,14 +41,17 @@ export function ColourCard({ colour, onDelete }: ColourCardProps) {
       </div>
 
       {expanded && (
-        <div className="colour-card-formats">
-          <ColourOutput label="HEX" value={colour.formats.hex} />
-          <ColourOutput label="HEX8" value={colour.formats.hex8} />
-          <ColourOutput label="RGB" value={colour.formats.rgb} />
-          <ColourOutput label="RGBA" value={colour.formats.rgba} />
-          <ColourOutput label="HSL" value={colour.formats.hsl} />
-          <ColourOutput label="HSLA" value={colour.formats.hsla} />
-        </div>
+        <>
+          <div className="colour-card-divider" />
+          <div className="colour-card-formats">
+            <ColourOutput label="HEX" value={colour.formats.hex} />
+            <ColourOutput label="HEX8" value={colour.formats.hex8} />
+            <ColourOutput label="RGB" value={colour.formats.rgb} />
+            <ColourOutput label="RGBA" value={colour.formats.rgba} />
+            <ColourOutput label="HSL" value={colour.formats.hsl} />
+            <ColourOutput label="HSLA" value={colour.formats.hsla} />
+          </div>
+        </>
       )}
     </div>
   )

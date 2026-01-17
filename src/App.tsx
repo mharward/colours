@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ColourInput } from './components/ColourInput'
 import { ColourList } from './components/ColourList'
+import { ThemeSelector } from './components/ThemeSelector'
 import { SavedColour } from './types'
 import './App.css'
 
@@ -16,13 +17,30 @@ function App() {
   }
 
   return (
-    <main className="app">
-      <h1 className="title">Colour Converter</h1>
-      <div className="app-content">
-        <ColourInput onAddColours={handleAddColours} />
-        <ColourList colours={colours} onDelete={handleDeleteColour} />
-      </div>
-    </main>
+    <div className="app">
+      <header className="app-header">
+        <div className="header-content">
+          <div className="brand">
+            <div className="brand-icon">
+              <span className="brand-icon-inner"></span>
+            </div>
+            <h1 className="title">Colour Converter</h1>
+          </div>
+          <ThemeSelector />
+        </div>
+      </header>
+
+      <main className="app-main">
+        <div className="app-content">
+          <section className="input-section">
+            <ColourInput onAddColours={handleAddColours} />
+          </section>
+          <section className="list-section">
+            <ColourList colours={colours} onDelete={handleDeleteColour} />
+          </section>
+        </div>
+      </main>
+    </div>
   )
 }
 

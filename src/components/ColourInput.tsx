@@ -115,7 +115,10 @@ export function ColourInput({ onAddColours }: ColourInputProps) {
       {preview && (
         <div
           className="colour-preview-small"
-          style={{ backgroundColor: preview.hex8 }}
+          style={{
+            backgroundColor: preview.hex8,
+            '--preview-glow': preview.rgba.replace(/[\d.]+\)$/, '0.35)')
+          } as React.CSSProperties}
           title={preview.hex}
         />
       )}
