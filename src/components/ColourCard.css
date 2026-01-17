@@ -1,0 +1,73 @@
+.colour-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease;
+}
+
+.colour-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.colour-card.expanded {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.colour-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.colour-card-header:hover {
+  background: #f8f8f8;
+}
+
+.colour-card-swatch {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.colour-card-hex {
+  flex: 1;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: 14px;
+  color: #333;
+}
+
+.colour-card-delete {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.colour-card-delete:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.colour-card-formats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  padding-top: 0;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 0;
+}

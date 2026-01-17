@@ -1,0 +1,27 @@
+.colour-list {
+  width: 100%;
+}
+
+.colour-list-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 16px 0;
+}
+
+.colour-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.colour-list-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: #888;
+  font-size: 15px;
+}
+
+.colour-list-empty p {
+  margin: 0;
+}

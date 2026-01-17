@@ -59,3 +59,41 @@ export function parseColour(input: string): ParsedColour {
 export function copyToClipboard(text: string): Promise<void> {
   return navigator.clipboard.writeText(text)
 }
+
+export function parseMultipleColours(input: string): ParsedColour[] {
+  // Split on commas/newlines but not inside parentheses (for rgb/hsl values)
+  const parts: string[] = []
+  let current = ''
+  let parenDepth = 0
+
+  for (const char of input) {
+    if (char === '(') {
+      parenDepth++
+      current += char
+    } else if (char === ')') {
+      parenDepth--
+      current += char
+    } else if ((char === ',' || char === '\n') && parenDepth === 0) {
+      if (current.trim()) {
+        parts.push(current.trim())
+      }
+      current = ''
+    } else {
+      current += char
+    }
+  }
+  if (current.trim()) {
+    parts.push(current.trim())
+  }
+
+  const results: ParsedColour[] = []
+
+  for (const part of parts) {
+    const parsed = parseColour(part)
+    if (parsed.valid) {
+      results.push(parsed)
+    }
+  }
+
+  return results
+}
