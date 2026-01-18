@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { copyToClipboard } from '../utils/colourUtils'
 import './ColourOutput.css'
+
+const COPIED_FEEDBACK_MS = 1500
 
 interface ColourOutputProps {
   label: string
@@ -9,11 +11,24 @@ interface ColourOutputProps {
 
 export function ColourOutput({ label, value }: ColourOutputProps) {
   const [copied, setCopied] = useState(false)
+  const timeoutRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   const handleCopy = async () => {
-    await copyToClipboard(value)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
+    try {
+      await copyToClipboard(value)
+      setCopied(true)
+      timeoutRef.current = window.setTimeout(() => setCopied(false), COPIED_FEEDBACK_MS)
+    } catch {
+      // Clipboard access denied - fail silently
+    }
   }
 
   return (

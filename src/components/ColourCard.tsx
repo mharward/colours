@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { SavedColour } from '../types'
+import { createGlowColour } from '../utils/colourUtils'
 import { ColourOutput } from './ColourOutput'
 import './ColourCard.css'
 
@@ -8,11 +9,12 @@ interface ColourCardProps {
   onDelete: (id: string) => void
 }
 
+const GLOW_OPACITY = 0.4
+
 export function ColourCard({ colour, onDelete }: ColourCardProps) {
   const [expanded, setExpanded] = useState(false)
 
-  // Create a glow colour with transparency for the swatch
-  const glowColour = colour.formats.rgba.replace(/[\d.]+\)$/, '0.4)')
+  const glowColour = createGlowColour(colour.formats.rgba, GLOW_OPACITY)
 
   return (
     <div

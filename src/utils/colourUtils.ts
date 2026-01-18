@@ -1,19 +1,5 @@
 import { parse, formatHex, formatHex8, formatRgb, formatHsl, Color } from 'culori'
-
-export interface ColourFormats {
-  hex: string
-  hex8: string
-  rgb: string
-  rgba: string
-  hsl: string
-  hsla: string
-}
-
-export interface ParsedColour {
-  valid: boolean
-  formats: ColourFormats | null
-  alpha: number
-}
+import { ColourFormats, ParsedColour, ValidParsedColour } from '../types'
 
 function formatRgba(color: Color): string {
   const rgb = formatRgb(color)
@@ -33,16 +19,14 @@ export function parseColour(input: string): ParsedColour {
   const trimmed = input.trim()
 
   if (!trimmed) {
-    return { valid: false, formats: null, alpha: 1 }
+    return { valid: false, formats: null, originalInput: '' }
   }
 
   const parsed = parse(trimmed)
 
   if (!parsed) {
-    return { valid: false, formats: null, alpha: 1 }
+    return { valid: false, formats: null, originalInput: trimmed }
   }
-
-  const alpha = parsed.alpha ?? 1
 
   const formats: ColourFormats = {
     hex: formatHex(parsed),
@@ -53,14 +37,18 @@ export function parseColour(input: string): ParsedColour {
     hsla: formatHsla(parsed),
   }
 
-  return { valid: true, formats, alpha }
+  return { valid: true, formats, originalInput: trimmed }
 }
 
 export function copyToClipboard(text: string): Promise<void> {
   return navigator.clipboard.writeText(text)
 }
 
-export function parseMultipleColours(input: string): ParsedColour[] {
+export function createGlowColour(rgba: string, opacity: number): string {
+  return rgba.replace(/[\d.]+\)$/, `${opacity})`)
+}
+
+export function parseMultipleColours(input: string): ValidParsedColour[] {
   // Split on commas/newlines but not inside parentheses (for rgb/hsl values)
   const parts: string[] = []
   let current = ''
@@ -86,12 +74,16 @@ export function parseMultipleColours(input: string): ParsedColour[] {
     parts.push(current.trim())
   }
 
-  const results: ParsedColour[] = []
+  const results: ValidParsedColour[] = []
 
   for (const part of parts) {
     const parsed = parseColour(part)
-    if (parsed.valid) {
-      results.push(parsed)
+    if (parsed.valid && parsed.formats) {
+      results.push({
+        valid: true,
+        formats: parsed.formats,
+        originalInput: parsed.originalInput,
+      })
     }
   }
 

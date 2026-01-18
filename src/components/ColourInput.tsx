@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
-import { parseColour, parseMultipleColours, ColourFormats } from '../utils/colourUtils'
-import { SavedColour } from '../types'
+import { parseColour, parseMultipleColours, createGlowColour } from '../utils/colourUtils'
+import { ColourFormats, SavedColour } from '../types'
 import './ColourInput.css'
+
+const PREVIEW_GLOW_OPACITY = 0.35
 
 interface ColourInputProps {
   onAddColours: (colours: SavedColour[]) => void
@@ -70,8 +72,8 @@ export function ColourInput({ onAddColours }: ColourInputProps) {
     if (multipleResults.length > 0) {
       const newColours: SavedColour[] = multipleResults.map((result, index) => ({
         id: `${Date.now()}-${index}`,
-        originalInput: result.formats!.hex,
-        formats: result.formats!,
+        originalInput: result.originalInput,
+        formats: result.formats,
       }))
       onAddColours(newColours)
       setTextInput('')
@@ -117,7 +119,7 @@ export function ColourInput({ onAddColours }: ColourInputProps) {
           className="colour-preview-small"
           style={{
             backgroundColor: preview.hex8,
-            '--preview-glow': preview.rgba.replace(/[\d.]+\)$/, '0.35)')
+            '--preview-glow': createGlowColour(preview.rgba, PREVIEW_GLOW_OPACITY)
           } as React.CSSProperties}
           title={preview.hex}
         />
