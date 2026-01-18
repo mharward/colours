@@ -134,6 +134,17 @@
   gap: 6px;
 }
 
+.capacity-warning {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.capacity-warning.capacity-full {
+  color: var(--color-danger);
+}
+
 .colour-preview-small {
   height: 56px;
   border-radius: var(--radius-md);

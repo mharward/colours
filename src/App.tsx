@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ColourInput } from './components/ColourInput'
+import { ColourInput, MAX_COLOURS } from './components/ColourInput'
 import { ColourList } from './components/ColourList'
 import { ThemeSelector } from './components/ThemeSelector'
 import { SavedColour } from './types'
@@ -9,11 +9,20 @@ function App() {
   const [colours, setColours] = useState<SavedColour[]>([])
 
   const handleAddColours = (newColours: SavedColour[]) => {
-    setColours(prev => [...newColours, ...prev])
+    setColours(prev => {
+      const combined = [...newColours, ...prev]
+      return combined.slice(0, MAX_COLOURS)
+    })
   }
 
   const handleDeleteColour = (id: string) => {
     setColours(prev => prev.filter(c => c.id !== id))
+  }
+
+  const handleUpdateColourName = (id: string, customName: string | undefined) => {
+    setColours(prev => prev.map(c =>
+      c.id === id ? { ...c, customName } : c
+    ))
   }
 
   return (
@@ -33,10 +42,14 @@ function App() {
       <main className="app-main">
         <div className="app-content">
           <section className="input-section">
-            <ColourInput onAddColours={handleAddColours} />
+            <ColourInput onAddColours={handleAddColours} currentCount={colours.length} />
           </section>
           <section className="list-section">
-            <ColourList colours={colours} onDelete={handleDeleteColour} />
+            <ColourList
+              colours={colours}
+              onDelete={handleDeleteColour}
+              onUpdateName={handleUpdateColourName}
+            />
           </section>
         </div>
       </main>

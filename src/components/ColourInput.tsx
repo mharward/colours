@@ -1,20 +1,27 @@
 import { useState, useEffect } from 'react'
-import { parseColour, parseMultipleColours, createGlowColour } from '../utils/colourUtils'
+import { parseColour, parseMultipleColours, createGlowColour, generateColourName, extractColourMetrics } from '../utils/colourUtils'
 import { ColourFormats, SavedColour } from '../types'
 import './ColourInput.css'
+
+export const MAX_COLOURS = 100
 
 const PREVIEW_GLOW_OPACITY = 0.35
 
 interface ColourInputProps {
   onAddColours: (colours: SavedColour[]) => void
+  currentCount: number
 }
 
-export function ColourInput({ onAddColours }: ColourInputProps) {
+export function ColourInput({ onAddColours, currentCount }: ColourInputProps) {
   const [textInput, setTextInput] = useState('')
   const [pickerValue, setPickerValue] = useState('#6366f1')
   const [preview, setPreview] = useState<ColourFormats | null>(null)
   const [isValid, setIsValid] = useState(true)
   const [activeSource, setActiveSource] = useState<'text' | 'picker'>('text')
+
+  const remaining = MAX_COLOURS - currentCount
+  const atCapacity = remaining <= 0
+  const nearCapacity = remaining <= 10 && remaining > 0
 
   useEffect(() => {
     if (activeSource === 'text') {
@@ -64,24 +71,36 @@ export function ColourInput({ onAddColours }: ColourInputProps) {
   }
 
   const handleAdd = () => {
+    if (atCapacity) return
+
     const input = activeSource === 'text' ? textInput : pickerValue
 
     // Check for multiple colours (comma or newline separated)
     const multipleResults = parseMultipleColours(input)
 
     if (multipleResults.length > 0) {
-      const newColours: SavedColour[] = multipleResults.map((result, index) => ({
-        id: `${Date.now()}-${index}`,
-        originalInput: result.originalInput,
-        formats: result.formats,
-      }))
+      // Limit to remaining capacity
+      const limitedResults = multipleResults.slice(0, remaining)
+
+      const newColours: SavedColour[] = limitedResults.map((result, index) => {
+        const metrics = extractColourMetrics(result.formats.hsl)
+        return {
+          id: `${Date.now()}-${index}`,
+          originalInput: result.originalInput,
+          formats: result.formats,
+          autoName: generateColourName(result.formats.hex),
+          hue: metrics.hue,
+          saturation: metrics.saturation,
+          lightness: metrics.lightness,
+        }
+      })
       onAddColours(newColours)
       setTextInput('')
       setPreview(null)
     }
   }
 
-  const canAdd = preview !== null && isValid
+  const canAdd = preview !== null && isValid && !atCapacity
 
   return (
     <div className="colour-input-section">
@@ -92,6 +111,7 @@ export function ColourInput({ onAddColours }: ColourInputProps) {
           placeholder="Enter colour(s) - e.g. #ff6600, red, rgb(255, 102, 0)"
           value={textInput}
           onChange={handleTextChange}
+          disabled={atCapacity}
           autoFocus
         />
         <input
@@ -99,6 +119,7 @@ export function ColourInput({ onAddColours }: ColourInputProps) {
           className="colour-picker"
           value={pickerValue}
           onChange={handlePickerChange}
+          disabled={atCapacity}
           title="Pick a colour"
         />
         <button
@@ -112,6 +133,18 @@ export function ColourInput({ onAddColours }: ColourInputProps) {
 
       {!isValid && textInput && (
         <p className="error-message">Unable to parse colour</p>
+      )}
+
+      {atCapacity && (
+        <p className="capacity-warning capacity-full">
+          Maximum capacity reached ({MAX_COLOURS} colours)
+        </p>
+      )}
+
+      {nearCapacity && (
+        <p className="capacity-warning">
+          {remaining} {remaining === 1 ? 'slot' : 'slots'} remaining
+        </p>
       )}
 
       {preview && (
